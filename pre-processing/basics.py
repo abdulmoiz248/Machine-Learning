@@ -1,14 +1,28 @@
 import pandas as pd
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import OneHotEncoder, LabelEncoder
+import matplotlib.pyplot as plt
+from tabulate import tabulate
+import seaborn as sns
+
 
 print('=' * 100)
 print('[INFO] Reading CSV...')
 df = pd.read_csv('./datasets/survey.csv')
 
+
+
 print('=' * 100)
 print('[INFO] Dropping "state" column...')
 df.drop(columns=['state'], inplace=True)
+
+
+print('=' * 100)
+print('[INFO] Adjusting age column')
+print(df["Age"].unique())       # See weird values
+print(df["Age"].dtype)    
+df = df[df["Age"].between(10, 100)]
+
 
 print('=' * 100)
 print('[INFO] Filling missing values in "self_employed" column with mode...')
@@ -48,4 +62,13 @@ df = pd.concat([df, encodedDf], axis=1)
 
 print('[INFO] Encoding complete.')
 print('=' * 100)
+
+
+print('[INFO] Dataset Description')
+print(df.describe())
+print('=' * 100)
+
+sns.boxplot(x="Age",data=df)
+plt.show()
+
 
