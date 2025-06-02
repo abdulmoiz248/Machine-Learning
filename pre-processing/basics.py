@@ -9,6 +9,7 @@ import seaborn as sns
 print('=' * 100)
 print('[INFO] Reading CSV...')
 df = pd.read_csv('./datasets/survey.csv')
+print(df.columns)
 
 
 
@@ -17,11 +18,6 @@ print('[INFO] Dropping "state" column...')
 df.drop(columns=['state'], inplace=True)
 
 
-print('=' * 100)
-print('[INFO] Adjusting age column')
-print(df["Age"].unique())       # See weird values
-print(df["Age"].dtype)    
-df = df[df["Age"].between(10, 100)]
 
 
 print('=' * 100)
@@ -68,7 +64,21 @@ print('[INFO] Dataset Description')
 print(df.describe())
 print('=' * 100)
 
+
+df['Age'] = df['Age'].fillna(df['Age'].mean())
+df = df[(df['Age'] > 10) & (df['Age'] < 100)]
+# sns.boxplot(x="Age",data=df)
+#sns.displot(df['Age'])
+# plt.show()
+
+
+Q1=df['Age'].quantile(0.25)
+Q3=df['Age'].quantile(0.75)
+IQR=Q3-Q1
+
+lowerRange=Q1-1.5*IQR
+upperRange=Q3+1.5*IQR
+
+df=df[((df['Age'] >=lowerRange ) & (df['Age'] <= upperRange))]
 sns.boxplot(x="Age",data=df)
 plt.show()
-
-
